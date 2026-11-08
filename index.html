@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Asylum Tracker — Авторизация</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        asylum: {
+                            50: '#fdf8f3',
+                            100: '#faebd8',
+                            200: '#f5d7b0',
+                            300: '#edc07a',
+                            400: '#e4a24d',
+                            500: '#d9862a',
+                            600: '#c46b21',
+                            700: '#9d511d',
+                            800: '#7d421e',
+                            900: '#66361c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        asylum: {
+                            50: '#fdf8f3',
+                            100: '#faebd8',
+                            200: '#f5d7b0',
+                            300: '#edc07a',
+                            400: '#e4a24d',
+                            500: '#d9862a',
+                            600: '#c46b21',
+                            700: '#9d511d',
+                            800: '#7d421e',
+                            900: '#66361c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-asylum-900 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full bg-asylum-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-asylum-900">Last Asylum Tracker</h1>
+            <p class="text-asylum-300">Идет загрузка данных...</p>
+        </div>
+    </div>
+
+    <!-- Auth Screen (login) -->
+    <div id="auth-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-40 p-6">
+        <div class="bg-asylum-900 rounded-2xl p-8 max-w-md w-full shadow-2xl text-center border border-asylum-100">
+            <div class="w-14 h-14 bg-asylum-500 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-asylum-900 mb-4">Добро пожаловать</h2>
+            <p class="text-asylum-400 mb-6">Введите ваш никнейм или UID для входа в систему</p>
+            
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-asylum-600 mb-2">Никнейм в игре</label>
+                    <input type="text" id="player-name" placeholder="Введите ник игрока" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-asylum-500 focus:border-transparent transition-colors"
+                           autocomplete="off">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-asylum-600 mb-2">или UID (опционально)</label>
+                    <input type="text" id="player-uid" placeholder="Введите UID"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-asylum-500 focus:border-transparent transition-colors"
+                           autocomplete="off">
+                </div>
+            </div>
+            
+            <button id="login-btn" 
+                    class="w-full px-6 py-3 bg-asylum-600 text-white font-medium rounded-lg hover:bg-asylum-700 focus:outline-none focus:ring-2 focus:ring-asylum-500 focus:ring-offset-2 transition-colors mt-4"
+                    type="button">
+                Войти
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Screen -->
+    <div id="app-screen" class="fixed inset-0 bg-gray-50 z-30 hidden">
+        
+        <!-- Top Bar -->
+        <header class="bg-asylum-900 text-white shadow-lg border-b border-asylum-200">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-asylum-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Last Asylum Tracker</h1>
+                        <p class="text-xs text-asylum-200">Альянс Святилище #388</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="user-name" class="font-medium"></span>
+                    <button id="logout-btn" class="px-4 py-2 text-sm text-asylum-300 hover:text-white transition-colors">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto p-4">
+            
+            <!-- Tabs Navigation -->
+            <nav class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6" role="tablist">
+                <button class="tab-active tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="overview">
+                    <span class="font-semibold">Обзор</span>
+                </button>
+                <button class="tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="manifest">
+                    <span class="font-semibold">Состав</span>
+                </button>
+                <button class="tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="planner">
+                    <span class="font-semibold">Планировщик</span>
+                </button>
+                <button class="tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="wanted">
+                    <span class="font-semibold">Розыск</span>
+                </button>
+                <button class="tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="rankings">
+                    <span class="font-semibold">Рейтинги</span>
+                </button>
+                <button class="tab-item block py-3 px-4 text-sm font-medium text-asylum-600 hover:text-asylum-700 transition-colors" data-tab="progress">
+                    <span class="font-semibold">Прогресс</span>
+                </button>
+            </nav>
+
+            <!-- Tab Content Area -->
+            <div id="tab-content" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 min-h-[600px]">
+                <!-- Здесь будут подгружаться вкладки -->
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-100 border-t border-gray-200 mt-6 py-4 text-center text-sm text-gray-500">
+            <p>Данные предоставлены Last Asylum Tracker | Авторизация: API + LocalStorage</p>
+        </footer>
+
+    </div>
+
+    <!-- Error Screen -->
+    <div id="error-screen" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md text-center shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-asylum-900 mb-2">Ошибка</h2>
+            <p id="error-message" class="text-asylum-500 mb-6"></p>
+            <button id="back-to-auth" class="px-6 py-3 bg-asylum-600 text-white rounded-lg hover:bg-asylum-700 font-medium transition-colors">Вернуться к входу</button>
+        </div>
+    </div>
+
+    <script src="messages.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
