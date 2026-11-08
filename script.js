@@ -171,11 +171,15 @@
         });
 
         if (!player) {
+            console.error('Игрок не найден:', searchTerm, searchUid);
+            console.error('Доступные игроки:', state.players.map(p => `${p.name} (${p.uid})`));
+            utils.showError(MESSAGES.ERROR.UNKNOWN_PLAYER);
             return false;
         }
 
         state.currentUser = player;
         storage.set(STORAGE_KEYS.CURRENT_USER, player);
+        console.log('Успешный вход:', player.name, player.uid);
         return true;
     }
 
@@ -812,6 +816,7 @@
             await loadAllianceData();
         }
 
+        console.log('Попытка входа:', { name, uid, playersCount: state.players.length });
         const success = doLogin(name, uid);
         utils.setLoading(false);
 
@@ -826,21 +831,27 @@
 
     // ============== ИНИЦИАЛИЗАЦИЯ ==============
     async function init() {
-        initEvents();
+        try {
+            initEvents();
 
-        // Показываем загрузку
-        utils.showScreen('loading');
+            // Показываем загрузку
+            utils.showScreen('loading');
 
-        // Загружаем данные
-        await loadAllianceData();
-        await loadWantedList();
+            // Загружаем данные
+            await loadAllianceData();
+            await loadWantedList();
 
-        // Пробуем автовход
-        if (tryAutoLogin()) {
-            utils.showScreen('app');
-            elements.userName.textContent = state.currentUser.name;
-            renderTab('overview');
-        } else {
+            // Пробуем автовход
+            if (tryAutoLogin()) {
+                utils.showScreen('app');
+                elements.userName.textContent = state.currentUser.name;
+                renderTab('overview');
+            } else {
+                utils.showScreen('auth');
+                elements.playerName.focus();
+            }
+        } catch (error) {
+            console.error('Ошибка инициализации:', error);
             utils.showScreen('auth');
             elements.playerName.focus();
         }
