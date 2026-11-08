@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Asylum Tracker — Поиск игрока</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        asylum: {
+                            50: '#fdf8f3',
+                            100: '#faebd8',
+                            200: '#f5d7b0',
+                            300: '#edc07a',
+                            400: '#e4a24d',
+                            500: '#d9862a',
+                            600: '#c46b21',
+                            700: '#9d511d',
+                            800: '#7d421e',
+                            900: '#66361c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Header -->
+    <header class="bg-asylum-900 text-white shadow-lg">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-asylum-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Last Asylum Tracker</h1>
+                        <p class="text-xs text-asylum-200">Поиск игроков альянса #388</p>
+                    </div>
+                </div>
+                <a href="https://lastasylumtracker.com/map?kid=388" target="_blank" class="text-sm text-asylum-300 hover:text-asylum-100 transition-colors">
+                    Открыть карту трекера →
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Search Section -->
+        <section class="mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Поиск игрока по нику</h2>
+                
+                <div class="flex flex-col sm:flex-row gap-3 max-w-md">
+                    <input 
+                        type="text" 
+                        id="player-search" 
+                        placeholder="Введите ник (например: KRISPI)"
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-asylum-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                        autocomplete="off"
+                    >
+                    <button 
+                        id="search-btn"
+                        class="px-6 py-3 bg-asylum-600 text-white font-medium rounded-lg hover:bg-asylum-700 focus:outline-none focus:ring-2 focus:ring-asylum-500 focus:ring-offset-2 transition-colors whitespace-nowrap"
+                    >
+                        Найти
+                    </button>
+                </div>
+                
+                <p class="mt-3 text-sm text-gray-500">
+                    Данные берутся из <a href="https://api.lastasylumtracker.com/docs" target="_blank" class="text-asylum-600 hover:underline">официального API</a>. Кэш обновляется каждые 10 минут.
+                </p>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section id="loading-section" class="hidden mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+                <div class="inline-flex items-center gap-3 text-asylum-600">
+                    <svg class="animate-spin h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="font-medium">Ищем игрока...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error State -->
+        <section id="error-section" class="hidden mb-8">
+            <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <p class="font-medium text-red-800" id="error-title">Ошибка</p>
+                        <p class="text-sm text-red-600" id="error-message">Не удалось найти игрока</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Player Card -->
+        <section id="player-section" class="hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <!-- Player Header -->
+                <div id="player-header" class="p-6 bg-gradient-to-r from-asylum-600 to-asylum-800 text-white">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <h2 id="player-name" class="text-2xl font-bold">KRISPI</h2>
+                            <div class="flex items-center gap-4 mt-2 text-sm text-asylum-100">
+                                <span id="player-uid" class="font-mono">UID: —</span>
+                                <span id="player-kingdom" class="bg-white/10 px-3 py-1 rounded-full">Королевство: —</span>
+                            </div>
+                        </div>
+                        <div id="player-power" class="text-right">
+                            <p class="text-xs text-asylum-200 uppercase tracking-wide">Сила</p>
+                            <p class="text-3xl font-bold" id="power-value">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Убийств</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-kills">—</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Уровень санатория</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-sanctuary">—</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">VIP</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-vip">—</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Координаты</p>
+                        <p class="text-xl font-bold text-gray-900" id="stat-coords">—</p>
+                    </div>
+                </div>
+
+                <!-- Alliance Info -->
+                <div id="alliance-section" class="hidden px-6 pb-6">
+                    <hr class="border-gray-200 mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Альянс</h3>
+                    <div class="bg-asylum-50 rounded-lg p-4 border border-asylum-100">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                                <p class="font-medium text-gray-900" id="alliance-name">—</p>
+                                <p class="text-sm text-gray-500" id="alliance-tag">—</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Уровень альянса</p>
+                                <p class="font-bold text-asylum-700" id="alliance-level">—</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Участников</p>
+                                <p class="font-bold text-gray-900" id="alliance-members">—</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Link -->
+                <div class="px-6 pb-6 pt-2">
+                    <a id="map-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-asylum-600 hover:text-asylum-700 font-medium transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Открыть на карте трекера
+                    </a>
+                </div>
+
+                <!-- Last Updated -->
+                <div class="px-6 pb-4 border-t border-gray-100">
+                    <p class="text-xs text-gray-400 text-center">
+                        Данные кэшированы API. Обновлено: <span id="last-updated" class="font-mono">—</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empty State -->
+        <section id="empty-section" class="text-center py-12">
+            <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Введите ник игрока для поиска</h3>
+            <p class="mt-1 text-gray-500">Статистика, координаты и информация об альянсе</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-200 mt-12">
+        <div class="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
+            <p>Данные предоставлены <a href="https://lastasylumtracker.com" target="_blank" class="text-asylum-600 hover:underline">Last Asylum Tracker</a></p>
+            <p class="mt-1">Неофициальный инструмент для альянса Святилище #388</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

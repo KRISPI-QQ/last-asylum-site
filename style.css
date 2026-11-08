@@ -1,0 +1,18 @@
+/* Основные стили для Last Asylum Tracker */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Кастомные цвета для темы */
+:root {
+    --asylum-50: #fdf8f3;
+    --asylum-100: #faebd8;
+    --asylum-200: #f5d7b0;
+    --asylum-300: #edc07a;
+    --asylum-400: #e4a24d;
+    --asylum-500: #d9862a;
+    --asylum-600: #c46b21;
+    --asylum-700: #9d511d;
+    --asylum-800: #7d421e;
+    --asylum-900: #66361c;
+}
